@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { PDFViewer, usePDF } from '@react-pdf/renderer';
 import { initialResumeData, type ResumeData } from './types';
 import { ResumeEditor } from './components/ResumeEditor';
@@ -32,20 +32,23 @@ function App() {
   const debouncedResumeData = useDebounce(resumeData, 500);
   const debouncedProfileImage = useDebounce(profileImage, 500);
 
-  // Force re-render of PDFViewer when live data changes
-  const [pdfKey, setPdfKey] = useState(0);
-
-  useEffect(() => {
-    setPdfKey(prev => prev + 1);
-  }, [resumeData, profileImage]);
+  // Precompute documents so the viewer can update immediately without remounting
+  const liveDocument = useMemo(
+    () => <ResumePDF data={resumeData} profileImage={profileImage} />,
+    [resumeData, profileImage]
+  );
+  const downloadableDocument = useMemo(
+    () => <ResumePDF data={debouncedResumeData} profileImage={debouncedProfileImage} />,
+    [debouncedResumeData, debouncedProfileImage]
+  );
 
   // Use usePDF hook for download link to avoid background render crashes
   // IMPORTANT: We only update the instance when data STABILIZES (debounced)
-  const [instance, updateInstance] = usePDF({ document: <ResumePDF data={debouncedResumeData} profileImage={debouncedProfileImage} /> });
+  const [instance, updateInstance] = usePDF({ document: downloadableDocument });
 
   useEffect(() => {
-      updateInstance(<ResumePDF data={debouncedResumeData} profileImage={debouncedProfileImage} />);
-  }, [debouncedResumeData, debouncedProfileImage, updateInstance]);
+      updateInstance(downloadableDocument);
+  }, [downloadableDocument, updateInstance]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -97,9 +100,9 @@ function App() {
           {/* Preview Pane */}
           <div className={`w-full md:w-1/2 bg-gray-800 p-4 ${showPreview ? 'block' : 'hidden md:block'}`}>
             <div className="h-full w-full bg-white shadow-lg rounded-lg overflow-hidden">
-              <PDFViewer key={pdfKey} width="100%" height="100%" className="border-none" showToolbar={false}>
-                  <ResumePDF data={resumeData} profileImage={profileImage} />
-                </PDFViewer>
+              <PDFViewer width="100%" height="100%" className="border-none" showToolbar={false}>
+                  {liveDocument}
+              </PDFViewer>
             </div>
           </div>
         </main>

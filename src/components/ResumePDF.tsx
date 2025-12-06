@@ -128,6 +128,12 @@ interface ResumePDFProps {
 }
 
 export const ResumePDF: React.FC<ResumePDFProps> = ({ data, profileImage }) => {
+  const { fontSettings } = data;
+  const summaryTextStyle = { fontFamily: fontSettings.summary.family, fontSize: fontSettings.summary.size };
+  const accomplishmentsTextStyle = { fontFamily: fontSettings.accomplishments.family, fontSize: fontSettings.accomplishments.size };
+  const skillsTextStyle = { fontFamily: fontSettings.skills.family, fontSize: fontSettings.skills.size };
+  const experienceTextStyle = { fontFamily: fontSettings.experience.family, fontSize: fontSettings.experience.size };
+
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -172,13 +178,13 @@ export const ResumePDF: React.FC<ResumePDFProps> = ({ data, profileImage }) => {
             {/* Summary */}
             <View style={styles.summarySection}>
               <Text style={styles.sectionTitle}>PROFESSIONAL SUMMARY</Text>
-              <HtmlPdf html={data.personalDetails.summary} />
+              <HtmlPdf html={data.personalDetails.summary} textStyle={summaryTextStyle} />
             </View>
 
             {/* Accomplishments */}
             <View style={styles.summarySection}>
               <Text style={styles.sectionTitle}>ACCOMPLISHMENTS</Text>
-              <HtmlPdf html={data.accomplishments} />
+              <HtmlPdf html={data.accomplishments} textStyle={accomplishmentsTextStyle} />
             </View>
 
             {/* Work History */}
@@ -194,7 +200,7 @@ export const ResumePDF: React.FC<ResumePDFProps> = ({ data, profileImage }) => {
                   </Text>
                   <Text style={styles.jobRole}>{exp.role}</Text>
                   
-                  <HtmlPdf html={exp.description} />
+                  <HtmlPdf html={exp.description} textStyle={experienceTextStyle} />
                 </View>
               ))}
             </View>
@@ -202,7 +208,7 @@ export const ResumePDF: React.FC<ResumePDFProps> = ({ data, profileImage }) => {
             {/* Skills */}
             <View style={styles.summarySection}>
               <Text style={styles.sectionTitle}>SKILLS</Text>
-              <HtmlPdf html={data.skills} />
+              <HtmlPdf html={data.skills} textStyle={skillsTextStyle} />
             </View>
 
           </View>

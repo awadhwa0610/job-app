@@ -15,6 +15,18 @@ export interface Experience {
   description: string; // Changed from string[] to HTML string
 }
 
+export interface FontSetting {
+  family: 'Helvetica' | 'Times-Roman' | 'Courier';
+  size: number;
+}
+
+export interface FontSettings {
+  summary: FontSetting;
+  accomplishments: FontSetting;
+  skills: FontSetting;
+  experience: FontSetting;
+}
+
 export interface PersonalDetails {
   fullName: string;
   email: string;
@@ -33,6 +45,7 @@ export interface ResumeData {
   experience: Experience[];
   skills: string; // Changed from string[] to HTML string
   accomplishments: string; // Changed from string[] to HTML string
+  fontSettings: FontSettings;
 }
 
 export const initialResumeData: ResumeData = {
@@ -65,5 +78,11 @@ export const initialResumeData: ResumeData = {
     }
   ],
   skills: "<ul><li>Product Strategy: Roadmap Development, Vision Setting, OKR Alignment, Market Research.</li><li>Data-Driven Decision Making: KPI Definition, A/B Testing, Funnel Analysis, Conversion Rate Optimization (CRO).</li><li>Technical: API Integrations, Payment Gateways, JIRA, Confluence, Figma.</li><li>E-Commerce & UX: Customer Journey Mapping, Checkout Optimization, Post-Purchase Experience, Mobile-First Design.</li><li>Agile Leadership: Sprint Planning, Backlog Prioritization, User Story Creation, Cross-Functional Team Leadership.</li></ul>",
-  accomplishments: "<ul><li>HealthTech Founder (CuratedHim): Launched a niche Direct-to-Consumer (D2C) fitness & wellness platform driven by personal passion. Architected a secure subscription-based payment model for health products, successfully navigating complex regulatory compliance while building a community-focused brand.</li><li>E-Commerce Revenue Growth (Ujala): Led the product redesign of a B2B booking platform, optimizing the search-to-book flow and driving a 55% increase in online sales revenue.</li><li>Customer Journey Optimization (OLG): Spearheaded the launch of Apple Pay & Interac, streamlining the checkout process and boosting digital transaction volume by 30%.</li><li>Global Platform Scale (Smile): Managed an $8 Million portfolio of digital platforms for international markets, ensuring scalability and seamless API integrations for global enterprise clients.</li><li>Post-Purchase Experience (OLG): Directed the roadmap for Real-Time Disbursements, reducing customer withdrawal times from 3 days to minutes.</li></ul>"
+  accomplishments: "<ul><li>HealthTech Founder (CuratedHim): Launched a niche Direct-to-Consumer (D2C) fitness & wellness platform driven by personal passion. Architected a secure subscription-based payment model for health products, successfully navigating complex regulatory compliance while building a community-focused brand.</li><li>E-Commerce Revenue Growth (Ujala): Led the product redesign of a B2B booking platform, optimizing the search-to-book flow and driving a 55% increase in online sales revenue.</li><li>Customer Journey Optimization (OLG): Spearheaded the launch of Apple Pay & Interac, streamlining the checkout process and boosting digital transaction volume by 30%.</li><li>Global Platform Scale (Smile): Managed an $8 Million portfolio of digital platforms for international markets, ensuring scalability and seamless API integrations for global enterprise clients.</li><li>Post-Purchase Experience (OLG): Directed the roadmap for Real-Time Disbursements, reducing customer withdrawal times from 3 days to minutes.</li></ul>",
+  fontSettings: {
+    summary: { family: 'Helvetica', size: 10 },
+    accomplishments: { family: 'Helvetica', size: 10 },
+    skills: { family: 'Helvetica', size: 10 },
+    experience: { family: 'Helvetica', size: 10 },
+  }
 };

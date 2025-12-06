@@ -21,3 +21,10 @@
     @apply inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500;
   }
 }
+
+/* Ensure bold text stays inline inside editors (avoid unintended line breaks) */
+.ql-editor strong,
+.ql-editor b {
+  display: inline;
+  font-weight: 700;
+}

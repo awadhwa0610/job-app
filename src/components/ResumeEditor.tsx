@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
-import type { ResumeData, Education, Experience } from '../types';
+import type { ResumeData, Education, Experience, FontSettings } from '../types';
 import { Plus, Trash2 } from 'lucide-react';
 
 interface ResumeEditorProps {
@@ -17,6 +17,14 @@ const modules = {
     ['clean']
   ],
 };
+
+const fontOptions: Array<{ label: string; value: FontSettings[keyof FontSettings]['family'] }> = [
+  { label: 'Helvetica', value: 'Helvetica' },
+  { label: 'Times', value: 'Times-Roman' },
+  { label: 'Courier', value: 'Courier' },
+];
+
+const sizeOptions = [9, 10, 11, 12, 13, 14, 16];
 
 export const ResumeEditor: React.FC<ResumeEditorProps> = ({ data, onChange, onImageUpload }) => {
   
@@ -79,9 +87,61 @@ export const ResumeEditor: React.FC<ResumeEditorProps> = ({ data, onChange, onIm
     onChange({ ...data, [field]: value });
   };
 
+  const updateFontSetting = (
+    section: keyof FontSettings,
+    key: keyof FontSettings[keyof FontSettings],
+    value: FontSettings[keyof FontSettings][keyof FontSettings[keyof FontSettings]]
+  ) => {
+    onChange({
+      ...data,
+      fontSettings: {
+        ...data.fontSettings,
+        [section]: {
+          ...data.fontSettings[section],
+          [key]: value,
+        },
+      },
+    });
+  };
+
   return (
     <div className="space-y-8 p-4 bg-white rounded-lg shadow overflow-y-auto h-full">
       
+      {/* Font Settings */}
+      <section>
+        <h2 className="text-xl font-bold mb-2 text-gray-800">Font Settings</h2>
+        <p className="text-sm text-gray-600 mb-3">Apply fonts and sizes per section (PDF updates live).</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {(['summary', 'accomplishments', 'skills', 'experience'] as Array<keyof FontSettings>).map((section) => (
+            <div key={section} className="p-3 border rounded bg-gray-50">
+              <div className="text-sm font-semibold text-gray-700 mb-2 capitalize">{section}</div>
+              <div className="flex gap-2">
+                <select
+                  className="input-field"
+                  value={data.fontSettings[section].family}
+                  onChange={(e) => updateFontSetting(section, 'family', e.target.value as FontSettings[keyof FontSettings]['family'])}
+                >
+                  {fontOptions.map((opt) => (
+                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  ))}
+                </select>
+                <select
+                  className="input-field"
+                  value={data.fontSettings[section].size}
+                  onChange={(e) => updateFontSetting(section, 'size', Number(e.target.value))}
+                >
+                  {sizeOptions.map((size) => (
+                    <option key={size} value={size}>{size}px</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <hr />
+
       {/* Personal Details */}
       <section>
         <h2 className="text-xl font-bold mb-4 text-gray-800">Personal Details</h2>
@@ -98,7 +158,13 @@ export const ResumeEditor: React.FC<ResumeEditorProps> = ({ data, onChange, onIm
           <input className="input-field" placeholder="Website/Link" value={data.personalDetails.website} onChange={(e) => updatePersonal('website', e.target.value)} />
           
           <label className="block text-sm font-medium text-gray-700 mt-2">Professional Summary</label>
-          <ReactQuill theme="snow" value={data.personalDetails.summary} onChange={(val) => updatePersonal('summary', val)} modules={modules} />
+          <ReactQuill 
+            theme="snow" 
+            value={data.personalDetails.summary} 
+            onChange={(val) => updatePersonal('summary', val)} 
+            modules={modules}
+            style={{ fontFamily: data.fontSettings.summary.family, fontSize: data.fontSettings.summary.size }}
+          />
         </div>
       </section>
 
@@ -143,7 +209,13 @@ export const ResumeEditor: React.FC<ResumeEditorProps> = ({ data, onChange, onIm
                 
                 <div className="pl-4 border-l-2 border-gray-300">
                     <label className="block text-xs font-bold text-gray-500 mb-2">Responsibilities / Description</label>
-                    <ReactQuill theme="snow" value={exp.description} onChange={(val) => updateExperience(index, 'description', val)} modules={modules} />
+                    <ReactQuill 
+                      theme="snow" 
+                      value={exp.description} 
+                      onChange={(val) => updateExperience(index, 'description', val)} 
+                      modules={modules} 
+                      style={{ fontFamily: data.fontSettings.experience.family, fontSize: data.fontSettings.experience.size }}
+                    />
                 </div>
             </div>
         ))}
@@ -156,7 +228,13 @@ export const ResumeEditor: React.FC<ResumeEditorProps> = ({ data, onChange, onIm
          <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-bold text-gray-800">Accomplishments</h2>
         </div>
-        <ReactQuill theme="snow" value={data.accomplishments} onChange={(val) => updateRichText('accomplishments', val)} modules={modules} />
+        <ReactQuill 
+          theme="snow" 
+          value={data.accomplishments} 
+          onChange={(val) => updateRichText('accomplishments', val)} 
+          modules={modules} 
+          style={{ fontFamily: data.fontSettings.accomplishments.family, fontSize: data.fontSettings.accomplishments.size }}
+        />
       </section>
 
       <hr />
@@ -166,7 +244,13 @@ export const ResumeEditor: React.FC<ResumeEditorProps> = ({ data, onChange, onIm
          <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-bold text-gray-800">Skills</h2>
         </div>
-        <ReactQuill theme="snow" value={data.skills} onChange={(val) => updateRichText('skills', val)} modules={modules} />
+        <ReactQuill 
+          theme="snow" 
+          value={data.skills} 
+          onChange={(val) => updateRichText('skills', val)} 
+          modules={modules} 
+          style={{ fontFamily: data.fontSettings.skills.family, fontSize: data.fontSettings.skills.size }}
+        />
       </section>
 
     </div>

@@ -1,20 +1,11 @@
 import React from 'react';
-import { Page, Text, View, Document, StyleSheet, Image, Font } from '@react-pdf/renderer';
+import { Page, Text, View, Document, StyleSheet, Image } from '@react-pdf/renderer';
 import type { ResumeData } from '../types';
 import { HtmlPdf } from './HtmlPdf';
 
-// Register fonts
-Font.register({
-  family: 'Helvetica',
-  fonts: [
-    { src: 'https://fonts.gstatic.com/s/helveticaneue/v70/1Ptsg8zYS_SKggPNyCg4QIFqPvL_d1YhTzDADqK_xM4.woff2' }, // Regular
-    { src: 'https://fonts.gstatic.com/s/helveticaneue/v70/1Ptsg8zYS_SKggPNyCg4QIFqPvL_d1YhTzDADqK_xM4.woff2', fontWeight: 'bold' }, // Bold fallback (using same for now as example, ideally need actual bold font file)
-    // Note: Standard fonts like Helvetica are built-in to PDF readers usually, but react-pdf embeds them. 
-    // Using standard 'Helvetica' family name without registration uses built-in fonts which supports bold/italic out of box usually.
-    // Let's try removing custom registration for Helvetica as it's a standard font.
-  ]
-});
-
+// We rely on standard built-in Helvetica which supports bold/italic automatically without registration.
+// If we needed a custom font (like Roboto or Open Sans), we would register it here.
+// Removing the manual registration avoids potential network loading issues or format incompatibilities.
 
 const styles = StyleSheet.create({
   page: {
@@ -211,27 +202,6 @@ export const ResumePDF: React.FC<ResumePDFProps> = ({ data, profileImage }) => {
             {/* Skills */}
             <View style={styles.summarySection}>
               <Text style={styles.sectionTitle}>SKILLS</Text>
-              {/* 
-                We want columns here. If the user enters a list, we can try to display it.
-                The issue with "Rich Text" is it's one big block. 
-                To get two columns, we either:
-                1. Ask user to manually split into two rich text fields? (Complicated UI)
-                2. Use CSS columns? react-pdf doesn't support CSS multi-column layout well.
-                3. Just render it as one block (safe) -> User asked for "fix garbled up".
-                   Garbled up was because of flex wrap on individual items. 
-                   If we just let it flow as a normal list, it won't look like the 2-column layout in the image, 
-                   BUT it will be readable and editable.
-                   
-                   Given "full liberty", maybe just one block is safer.
-                   OR, we can parse the UL and split the LIs into two chunks.
-                   
-                   Let's try rendering as one block first. The user can format it how they like.
-                   The garbled text was specifically due to the flex-wrap implementation.
-                   Removing flex-wrap and just listing them solves the "garbled" part.
-                   
-                   If they WANT columns, they might need a specific UI for that.
-                   Let's stick to single column flow for stability with rich text first.
-              */}
               <HtmlPdf html={data.skills} />
             </View>
 

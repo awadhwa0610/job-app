@@ -1,6 +1,6 @@
 import React from 'react';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import ReactQuill from 'react-quill-new';
+import 'react-quill-new/dist/quill.snow.css';
 import type { ResumeData, Education, Experience } from '../types';
 import { Plus, Trash2 } from 'lucide-react';
 
@@ -21,6 +21,9 @@ const modules = {
 export const ResumeEditor: React.FC<ResumeEditorProps> = ({ data, onChange, onImageUpload }) => {
   
   const updatePersonal = (field: string, value: string) => {
+    // Avoid infinite loops by checking if value actually changed
+    if (data.personalDetails[field as keyof typeof data.personalDetails] === value) return;
+    
     onChange({
       ...data,
       personalDetails: { ...data.personalDetails, [field]: value }
@@ -48,6 +51,9 @@ export const ResumeEditor: React.FC<ResumeEditorProps> = ({ data, onChange, onIm
   };
 
   const updateExperience = (index: number, field: keyof Experience, value: string) => {
+    const currentVal = (data.experience[index] as any)[field];
+    if (currentVal === value) return;
+
     const newExp = [...data.experience];
     // @ts-ignore - Dynamic assignment
     (newExp[index] as any)[field] = value;
@@ -69,6 +75,7 @@ export const ResumeEditor: React.FC<ResumeEditorProps> = ({ data, onChange, onIm
   };
 
   const updateRichText = (field: 'skills' | 'accomplishments', value: string) => {
+    if (data[field] === value) return;
     onChange({ ...data, [field]: value });
   };
 

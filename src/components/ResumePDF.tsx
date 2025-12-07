@@ -12,6 +12,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#FFFFFF',
     fontFamily: 'Helvetica',
+    paddingTop: 0,
+    paddingBottom: 0,
   },
   sidebar: {
     width: '30%',
@@ -23,6 +25,10 @@ const styles = StyleSheet.create({
   main: {
     width: '70%',
     padding: 0,
+  },
+  mainContent: {
+    paddingTop: 0,
+    paddingBottom: 24,
   },
   // Sidebar Styles
   profileImage: {
@@ -62,6 +68,7 @@ const styles = StyleSheet.create({
     padding: 30,
     paddingBottom: 40,
     marginBottom: 20,
+    marginTop: 0,
   },
   name: {
     fontSize: 32,
@@ -119,6 +126,10 @@ const styles = StyleSheet.create({
   },
   skillColumn: {
     width: '48%', // Use 48% to leave a small gap
+  },
+
+  mainSpacer: {
+    height: 24,
   }
 });
 
@@ -169,6 +180,9 @@ export const ResumePDF: React.FC<ResumePDFProps> = ({ data, profileImage }) => {
 
         {/* Main Content */}
         <View style={styles.main}>
+          {/* Spacer applies only on pages after the first */}
+          <View render={({ pageNumber }) => (pageNumber > 1 ? <View style={styles.mainSpacer} /> : null)} />
+
           <View style={styles.headerNameContainer}>
             <Text style={styles.name}>{data.personalDetails.fullName}</Text>
           </View>
